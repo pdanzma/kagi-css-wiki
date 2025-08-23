@@ -1,0 +1,627 @@
+<h1 id="kagi-custom-css-wiki">Kagi Custom CSS Wiki</h1>
+<p>Ein umfassender Leitfaden für die Entwicklung eigener Custom CSS Themes für die Kagi Suchmaschine. </p>
+<h2 id="inhaltsverzeichnis">Inhaltsverzeichnis</h2>
+<ol>
+<li><a href="#erste-schritte">Erste Schritte</a></li>
+<li><a href="#kagi-dom-struktur-verstehen">Kagi DOM-Struktur verstehen</a></li>
+<li><a href="#css-variablen-und-theming">CSS-Variablen und Theming</a></li>
+<li><a href="#wichtige-css-selektoren">Wichtige CSS-Selektoren</a></li>
+<li><a href="#animationen-und-hover-effekte">Animationen und Hover-Effekte</a></li>
+<li><a href="#community-projekte-analysieren">Community-Projekte analysieren</a></li>
+<li><a href="#tipps--tricks">Tipps &amp; Tricks</a></li>
+<li><a href="#häufige-probleme--lösungen">Häufige Probleme &amp; Lösungen</a></li>
+<li><a href="#ressourcen--links">Ressourcen &amp; Links</a></li>
+</ol>
+<hr>
+<h2 id="erste-schritte">Erste Schritte</h2>
+<h3 id="installation-und-aktivierung">Installation und Aktivierung</h3>
+<ol>
+<li><strong>CSS-Editor erreichen</strong>: Gehe zu den <a href="https://kagi.com/settings?p=custom_css">Kagi Einstellungen</a></li>
+<li><strong>Custom CSS aktivieren</strong>: Schalte den Toggle &quot;Benutzerdefiniertes CSS aktivieren&quot; ein</li>
+<li><strong>CSS eingeben</strong>: Füge den CSS-Code in das Textfeld ein (max. 40.000 Zeichen - Stand August 2025)</li>
+<li><strong>Testen</strong>: Verwende <code>kagi.com/search?q=test&amp;no_css</code> zum Deaktivieren der CSS Datei bei Problemen</li>
+</ol>
+<h3 id="grundlegende-template-struktur">Grundlegende Template-Struktur</h3>
+<p>Das ist üblich, um sich selbst in dem Projekt zu erwähnen und Lizenzprobleme zu vermeiden. Das :root-Element ändert alles im Dokument. Die Farbe wird im HEX-Format angegeben, also zum Beispiel #FFFFFF für Weiß. Die Groß- und Kleinschreibung ist egal. Es kann auch #ffffff heißen.</p>
+<p>Auffallend ist auch die Funktion zum Hinterlegen von Kommentaren. Das passiert mit <code>/* ... */</code>. Bitte beachte: Auch die Kommentare werden als Zeichen gewertet und sollten nach Möglichkeit minimiert oder entfernt werden, wenn man später an die Obergrenze für Zeichen gelangt.</p>
+<pre><code class="lang-css"><span class="hljs-comment">/* ===========================================
+   KAGI CUSTOM CSS THEME
+   Autor: [Dein Name]
+   Version: 1.0
+   =========================================== */</span>
+
+<span class="hljs-comment">/* CSS-Variablen definieren */</span>
+<span class="hljs-selector-pseudo">:root</span> {
+  <span class="hljs-attribute">--primary-color</span>: #your-color; <span class="hljs-comment">/*  */</span>
+  <span class="hljs-attribute">--secondary-color</span>: #your-color;
+  <span class="hljs-attribute">--background-color</span>: #your-color;
+  <span class="hljs-attribute">--text-color</span>: #your-color;
+}
+
+<span class="hljs-comment">/* Dark Mode Variablen */</span>
+<span class="hljs-selector-class">.theme_dark</span>,
+<span class="hljs-selector-class">.theme_moon_dark</span> {
+  <span class="hljs-attribute">--primary-color</span>: #your-dark-color;
+  <span class="hljs-comment">/* weitere Dark Mode Farben */</span>
+}
+
+<span class="hljs-comment">/* Responsive Design */</span>
+@<span class="hljs-keyword">media</span> (max-width: <span class="hljs-number">768px</span>) {
+  <span class="hljs-comment">/* Mobile Anpassungen */</span>
+}
+</code></pre>
+<h3 id="einsatz-des-inspectors">Einsatz des Inspectors</h3>
+<p>Der Inspector ist ein Entwicklerwerkzeug, mit dem man die Struktur und Gestaltung von Webseiten analysieren und bearbeiten kann. Er ermöglicht es, HTML-Elemente, CSS-Stile und das Layout direkt im Browser zu untersuchen und zu verändern. </p>
+<p>Hilfsseite zum Einstieg von Microsoft Learn: <a href="https://learn.microsoft.com/de-de/microsoft-edge/devtools/css/inspect">Microsoft Learn Inspector Tool</a></p>
+<h3 id="nutzung-des-inspectors-in-firefox">Nutzung des Inspectors in Firefox</h3>
+<ul>
+<li>Suche bspw. &#39;test&#39; in der Kagi Suche</li>
+<li>Klicke mit der <strong>rechten Maustaste</strong> auf das Element, welches inspeziert werden soll. </li>
+<li>Wähle im Kontextmenü die Option &#39;Element untersuchen&#39; (unterscheidet sich von Browser zu Browser)</li>
+<li>Alternativ kann man den Inspector auch über die Tastenkombination <strong>F12</strong> oder <strong>Strg+Shift+I</strong> (Windows/Linux) bzw. <strong>Cmd+Option+I</strong> (Mac) öffnen.</li>
+<li>Der Inspector erscheint in einem Bereich am unteren oder seitlichen Rand des Browserfensters, wo der HTML-Quellcode und die dazugehörigen CSS-Stile angeschaut und bearbeitet werden kann.</li>
+</ul>
+<h3 id="nutzung-des-inspectors-in-chrome">Nutzung des Inspectors in Chrome</h3>
+<ul>
+<li>Suche bspw. &#39;test&#39; in der Kagi Suche</li>
+<li>Klicke mit der <strong>rechten Maustaste</strong> auf das Element, welches inspeziert werden soll. </li>
+<li>Wähle im Kontextmenü die Option &#39;Untersuchen&#39; (unterscheidet sich von Browser zu Browser)</li>
+<li>Alternativ kann man den Inspector auch über die Tastenkombination <strong>F12</strong> oder <strong>Strg+Shift+I</strong> (Windows/Linux) bzw. <strong>Cmd+Option+I</strong> (Mac) öffnen.</li>
+<li>Der Inspector erscheint in einem Bereich am unteren oder seitlichen Rand des Browserfensters, wo der HTML-Quellcode und die dazugehörigen CSS-Stile angeschaut und bearbeitet werden kann.</li>
+</ul>
+<hr>
+<h2 id="kagi-dom-struktur-verstehen">Kagi DOM-Struktur verstehen</h2>
+<p>Die HTML- und CSS-Struktur ist in einer sogenannten DOM-Struktur aufgebaut. Bitte beachte, dass verschiedene Elemente voneinander abhängig sind. Dies ist bei der Bearbeitung zu berücksichtigen. Beispiel hierfür:</p>
+<pre><code class="lang-css">.d-info-<span class="hljs-built_in">box</span>-<span class="hljs-built_in">title</span>-<span class="hljs-built_in">header</span>.--trackers
+</code></pre>
+<h3 id="haupt-container">Haupt-Container</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Hauptlayout-Container */</span>
+<span class="hljs-selector-class">.app-header</span>          <span class="hljs-comment">/* Kopfzeile mit Suchleiste */</span>
+<span class="hljs-selector-class">.app-content</span>         <span class="hljs-comment">/* Hauptinhalt */</span>
+<span class="hljs-selector-class">.center-content-box</span>  <span class="hljs-comment">/* Zentrale Inhaltsbox */</span>
+<span class="hljs-selector-class">.right-content-box</span>   <span class="hljs-comment">/* Rechte Sidebar (Wikipedia, etc.) */</span>
+<span class="hljs-selector-class">.search-form</span>         <span class="hljs-comment">/* Suchformular */</span>
+<span class="hljs-selector-class">.search-results</span>      <span class="hljs-comment">/* Suchergebnisse Container */</span>
+</code></pre>
+<h3 id="suchergebnisse">Suchergebnisse</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Suchergebnis-Elemente */</span>
+<span class="hljs-selector-class">.search-result</span>       <span class="hljs-comment">/* Einzelnes Suchergebnis */</span>
+<span class="hljs-selector-class">.__sri-title</span>         <span class="hljs-comment">/* Ergebnis-Titel */</span>
+<span class="hljs-selector-class">.__sri-url</span>           <span class="hljs-comment">/* URL-Anzeige */</span>
+<span class="hljs-selector-class">.__sri-desc</span>          <span class="hljs-comment">/* Beschreibungstext */</span>
+<span class="hljs-selector-class">.__sri-time</span>          <span class="hljs-comment">/* Zeitstempel */</span>
+
+<span class="hljs-comment">/* Gruppierte Ergebnisse */</span>
+<span class="hljs-selector-class">.sri-group</span>           <span class="hljs-comment">/* Gruppierte Suchergebnisse */</span>
+<span class="hljs-selector-class">.__srgi</span>              <span class="hljs-comment">/* Einzelelement in Gruppe */</span>
+</code></pre>
+<h3 id="navigation-und-filter">Navigation und Filter</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Navigation */</span>
+<span class="hljs-selector-class">.serp-nav</span>           <span class="hljs-comment">/* Hauptnavigation (Web, Bilder, Videos, etc.) */</span>
+<span class="hljs-selector-class">.nav_item</span>           <span class="hljs-comment">/* Navigationselemente */</span>
+<span class="hljs-selector-class">.sidebar-filter-nav-form</span> <span class="hljs-comment">/* Filter-Navigation */</span>
+
+<span class="hljs-comment">/* Lenses (Suchfilter) */</span>
+._0_lenses          <span class="hljs-comment">/* Lenses Container */</span>
+<span class="hljs-selector-class">.k_ui_dropdown</span>      <span class="hljs-comment">/* Dropdown-Menüs */</span>
+</code></pre>
+<hr>
+<h2 id="css-variablen-und-theming">CSS-Variablen und Theming</h2>
+<h3 id="wichtige-kagi-css-variablen">Wichtige Kagi CSS-Variablen</h3>
+<pre><code class="lang-css"><span class="hljs-selector-pseudo">:root</span> {
+  <span class="hljs-comment">/* Grundfarben */</span>
+  <span class="hljs-attribute">--app-bg</span>: <span class="hljs-number">#ffffff</span>;                    <span class="hljs-comment">/* Haupthintergrund */</span>
+  <span class="hljs-attribute">--app-text</span>: <span class="hljs-number">#000000</span>;                  <span class="hljs-comment">/* Haupttext */</span>
+  <span class="hljs-attribute">--primary</span>: <span class="hljs-number">#18181a</span>;                   <span class="hljs-comment">/* Primärfarbe */</span>
+  <span class="hljs-attribute">--secondary</span>: <span class="hljs-number">#ffffff</span>;                 <span class="hljs-comment">/* Sekundärfarbe */</span>
+
+  <span class="hljs-comment">/* Such-Interface */</span>
+  <span class="hljs-attribute">--color-search-input</span>: <span class="hljs-number">#ffffff</span>;        <span class="hljs-comment">/* Suchfeld Hintergrund */</span>
+  <span class="hljs-attribute">--color-search-input-border</span>: <span class="hljs-number">#e6e6e8</span>; <span class="hljs-comment">/* Suchfeld Rahmen */</span>
+
+  <span class="hljs-comment">/* Suchergebnisse */</span>
+  <span class="hljs-attribute">--search-result-title</span>: <span class="hljs-number">#18181a</span>;       <span class="hljs-comment">/* Titel-Farbe */</span>
+  <span class="hljs-attribute">--search-result-content-text</span>: <span class="hljs-number">#5a5a60</span>; <span class="hljs-comment">/* Beschreibungstext */</span>
+  <span class="hljs-attribute">--search-result-url-link</span>: <span class="hljs-number">#707077</span>;    <span class="hljs-comment">/* URL-Farbe */</span>
+
+  <span class="hljs-comment">/* Hover-Effekte */</span>
+  <span class="hljs-attribute">--hover-bg</span>: <span class="hljs-built_in">rgba</span>(172, 172, 175, 0.1); <span class="hljs-comment">/* Hover-Hintergrund */</span>
+  <span class="hljs-attribute">--primary-hover</span>: <span class="hljs-number">#6c5edc</span>;             <span class="hljs-comment">/* Hover-Farbe */</span>
+
+  <span class="hljs-comment">/* Abstände */</span>
+  <span class="hljs-attribute">--search-result-gap</span>: <span class="hljs-number">32px</span>;            <span class="hljs-comment">/* Abstand zwischen Ergebnissen */</span>
+}
+</code></pre>
+<h3 id="dark-mode-anpassungen">Dark Mode Anpassungen</h3>
+<pre><code class="lang-css"><span class="hljs-selector-class">.theme_dark</span>,
+<span class="hljs-selector-class">.theme_moon_dark</span> {
+  <span class="hljs-attribute">--app-bg</span>: <span class="hljs-number">#22242f</span>;
+  <span class="hljs-attribute">--app-text</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attribute">--primary</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attribute">--secondary</span>: <span class="hljs-number">#22242f</span>;
+
+  <span class="hljs-comment">/* Such-Interface für Dark Mode */</span>
+  <span class="hljs-attribute">--color-search-input</span>: <span class="hljs-number">#2f2f31</span>;
+  <span class="hljs-attribute">--color-search-input-border</span>: <span class="hljs-number">#454549</span>;
+
+  <span class="hljs-comment">/* Angepasste Farben für bessere Lesbarkeit */</span>
+  <span class="hljs-attribute">--search-result-title</span>: <span class="hljs-number">#ffffff</span>;
+  <span class="hljs-attribute">--search-result-content-text</span>: <span class="hljs-number">#cfcfdb</span>;
+}
+</code></pre>
+<h3 id="eigene-variablen-definieren">Eigene Variablen definieren</h3>
+<pre><code class="lang-css"><span class="hljs-selector-pseudo">:root</span> {
+  <span class="hljs-comment">/* Deine eigenen Variablen */</span>
+  <span class="hljs-attribute">--brand-primary</span>: <span class="hljs-number">#ff6b35</span>;
+  <span class="hljs-attribute">--brand-secondary</span>: <span class="hljs-number">#004e89</span>;
+  <span class="hljs-attribute">--brand-accent</span>: <span class="hljs-number">#f7931e</span>;
+
+  <span class="hljs-comment">/* Größen */</span>
+  <span class="hljs-attribute">--border-radius</span>: <span class="hljs-number">8px</span>;
+  <span class="hljs-attribute">--box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">4px</span> <span class="hljs-number">6px</span> <span class="hljs-built_in">rgba</span>(0, 0, 0, 0.1);
+
+  <span class="hljs-comment">/* Animationen */</span>
+  <span class="hljs-attribute">--transition-fast</span>: <span class="hljs-number">0.2s</span> ease;
+  <span class="hljs-attribute">--transition-normal</span>: <span class="hljs-number">0.3s</span> ease;
+}
+</code></pre>
+<hr>
+<h2 id="wichtige-css-selektoren">Wichtige CSS-Selektoren</h2>
+<h3 id="suchleiste-anpassen">Suchleiste anpassen</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Suchformular */</span>
+<span class="hljs-selector-class">.search-form</span> {
+  <span class="hljs-comment">/* Deine Styles */</span>
+}
+
+<span class="hljs-comment">/* Suchfeld */</span>
+<span class="hljs-selector-class">.search-input</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">var</span>(--color-search-input);
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-built_in">var</span>(--color-search-input-border);
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-built_in">var</span>(--border-radius);
+  <span class="hljs-attribute">transition</span>: <span class="hljs-built_in">var</span>(--transition-normal);
+}
+
+<span class="hljs-comment">/* Suchfeld fokussiert */</span>
+<span class="hljs-selector-class">.search-input</span><span class="hljs-selector-pseudo">:focus</span> {
+  <span class="hljs-attribute">border-color</span>: <span class="hljs-built_in">var</span>(--brand-primary);
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">3px</span> <span class="hljs-built_in">rgba</span>(255, 107, 53, 0.1);
+}
+</code></pre>
+<h3 id="suchergebnisse-stylen">Suchergebnisse stylen</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Suchergebnis Container */</span>
+<span class="hljs-selector-class">.search-result</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-built_in">var</span>(--search-result-gap);
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-built_in">var</span>(--border-radius);
+  <span class="hljs-attribute">transition</span>: <span class="hljs-built_in">var</span>(--transition-normal);
+}
+
+<span class="hljs-comment">/* Hover-Effekt für Suchergebnisse */</span>
+<span class="hljs-selector-class">.search-result</span><span class="hljs-selector-pseudo">:hover</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">var</span>(--hover-bg);
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(-2px);
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">var</span>(--box-shadow);
+}
+
+<span class="hljs-comment">/* Titel-Links */</span>
+<span class="hljs-selector-class">.__sri-title</span> <span class="hljs-selector-class">.__sri_title_link</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--brand-primary);
+  <span class="hljs-attribute">text-decoration</span>: none;
+  <span class="hljs-attribute">border-bottom</span>: <span class="hljs-number">2px</span> solid transparent;
+  <span class="hljs-attribute">transition</span>: <span class="hljs-built_in">var</span>(--transition-fast);
+}
+
+<span class="hljs-selector-class">.__sri-title</span> <span class="hljs-selector-class">.__sri_title_link</span><span class="hljs-selector-pseudo">:hover</span> {
+  <span class="hljs-attribute">border-bottom-color</span>: <span class="hljs-built_in">var</span>(--brand-primary);
+}
+</code></pre>
+<h3 id="navigation-anpassen">Navigation anpassen</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Hauptnavigation */</span>
+<span class="hljs-selector-class">.serp-nav</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgba</span>(255, 255, 255, 0.8);
+  <span class="hljs-attribute">backdrop-filter</span>: <span class="hljs-built_in">blur</span>(10px);
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-built_in">var</span>(--border-radius);
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>;
+}
+
+<span class="hljs-comment">/* Navigationsitems */</span>
+<span class="hljs-selector-class">.serp-nav</span> <span class="hljs-selector-class">.nav_item</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">8px</span> <span class="hljs-number">16px</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-built_in">calc</span>(var(--border-radius) / <span class="hljs-number">2</span>);
+  <span class="hljs-attribute">transition</span>: <span class="hljs-built_in">var</span>(--transition-fast);
+}
+
+<span class="hljs-selector-class">.serp-nav</span> <span class="hljs-selector-class">.nav_item</span><span class="hljs-selector-pseudo">:hover</span>,
+<span class="hljs-selector-class">.serp-nav</span> <span class="hljs-selector-class">.nav_item</span><span class="hljs-selector-class">.--active</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">var</span>(--brand-primary);
+  <span class="hljs-attribute">color</span>: white;
+}
+</code></pre>
+<h3 id="font-ndern">Font ändern</h3>
+<p>Auch wenn dies nicht die bevorzugte Vorgehensweise des Kagi Staff ist (ein kleiner Scherz am Rande), besteht die Möglichkeit, die globale Schriftart mittels CSS zu ändern. Standardmäßig ist die Schriftart &quot;Lufga&quot; eingestellt, die mithilfe der folgenden Regel an die gewünschte Schriftart angepasst werden kann.</p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Ändert die Font zu Arial */</span>
+<span class="hljs-selector-tag">body</span> {
+    <span class="hljs-attribute">font-family</span>: Arial, sans-serif <span class="hljs-meta">!important</span>;
+}
+</code></pre>
+<hr>
+<h2 id="animationen-und-hover-effekte">Animationen und Hover-Effekte</h2>
+<p>In dieser Sektion werden verschiedene Animationsarten behandelt, die ausschließlich mit CSS realisiert werden könenn. Hover-Effekte für diverse Buttons sind in der Regel einfach zu realisieren und ausreichend. Für die Einbindung von tiefen und komplexeren Animationen empfiehlt sich die Beispielimplementierung einer Fade-In-Animation anzuschauen, die die Suchergebnisse langsam einblendet. Es sollte jedoch beachtet werden, dass zu viele oder zu lange Animationen als störend empfunden werden und die Benutzererfahrung beeinträchtigen können. Darüber hinaus ist es empfehlenswert, bei Animationen einen Reduced-Motion-Modus zu implementieren. Dies ermöglicht es den Nutzern, die keine Animationen wünschen, diese in ihren Browsereinstellungen zu deaktivieren.</p>
+<h3 id="fade-in-animation-f-r-suchergebnisse">Fade-In Animation für Suchergebnisse</h3>
+<pre><code class="lang-css">@<span class="hljs-keyword">keyframes</span> fadeInUp {
+  <span class="hljs-selector-tag">from</span> {
+    <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(20px);
+  }
+  <span class="hljs-selector-tag">to</span> {
+    <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;
+    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(0);
+  }
+}
+
+<span class="hljs-selector-class">.search-result</span> {
+  <span class="hljs-attribute">animation</span>: fadeInUp <span class="hljs-number">0.3s</span> ease forwards;
+}
+
+<span class="hljs-comment">/* Gestaffelte Animation */</span>
+<span class="hljs-selector-class">.search-result</span><span class="hljs-selector-pseudo">:nth-child(1)</span> { <span class="hljs-attribute">animation-delay</span>: <span class="hljs-number">0.1s</span>; }
+<span class="hljs-selector-class">.search-result</span><span class="hljs-selector-pseudo">:nth-child(2)</span> { <span class="hljs-attribute">animation-delay</span>: <span class="hljs-number">0.2s</span>; }
+<span class="hljs-selector-class">.search-result</span><span class="hljs-selector-pseudo">:nth-child(3)</span> { <span class="hljs-attribute">animation-delay</span>: <span class="hljs-number">0.3s</span>; }
+<span class="hljs-comment">/* usw. */</span>
+</code></pre>
+<h3 id="hover-effekte-f-r-buttons">Hover-Effekte für Buttons</h3>
+<pre><code class="lang-css"><span class="hljs-selector-class">.k_ui_btn_group</span> <span class="hljs-selector-class">.k_ui_btn</span> {
+  <span class="hljs-attribute">position</span>: relative;
+  <span class="hljs-attribute">overflow</span>: hidden;
+  <span class="hljs-attribute">transition</span>: all <span class="hljs-number">0.3s</span> ease;
+}
+
+<span class="hljs-selector-class">.k_ui_btn_group</span> <span class="hljs-selector-class">.k_ui_btn</span><span class="hljs-selector-pseudo">::before</span> {
+  <span class="hljs-attribute">content</span>: <span class="hljs-string">''</span>;
+  <span class="hljs-attribute">position</span>: absolute;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">left</span>: -<span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  <span class="hljs-attribute">transition</span>: left <span class="hljs-number">0.5s</span>;
+}
+
+<span class="hljs-selector-class">.k_ui_btn_group</span> <span class="hljs-selector-class">.k_ui_btn</span><span class="hljs-selector-pseudo">:hover</span><span class="hljs-selector-pseudo">::before</span> {
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">100%</span>;
+}
+</code></pre>
+<h3 id="glassmorphism-effekt">Glassmorphism-Effekt</h3>
+<p>Gerne möchte ich Ihnen einen kleinen Exkurs zu meinem eigenen Thema geben. Diese Richtlinien implementieren einen Milchglas-Effekt für verschiedene Elemente, der ein Alleinstellungsmerkmal meines Themes ist. Sollten Sie diese Funktion auch gerne in Ihrem Theme haben wollen, beispielsweise als Theme in Anlehnung des Liquid Glass Themes von Apple, können Sie diese Regel gerne übernehmen und in Ihr Theme einbauen. Ich empfehle Ihnen außerdem die Seite <a href="https://css.glass">css glass</a>, auf der Sie benutzerdefinierte Glasseffekte generieren lassen können.</p>
+<pre><code class="lang-css"><span class="hljs-selector-class">.glassmorphism</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgba</span>(255, 255, 255, 0.25);
+  <span class="hljs-attribute">backdrop-filter</span>: <span class="hljs-built_in">blur</span>(10px);
+  <span class="hljs-attribute">-webkit-backdrop-filter</span>: <span class="hljs-built_in">blur</span>(10px);
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-built_in">rgba</span>(255, 255, 255, 0.18);
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-built_in">var</span>(--border-radius);
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">8px</span> <span class="hljs-number">32px</span> <span class="hljs-number">0</span> <span class="hljs-built_in">rgba</span>(31, 38, 135, 0.37);
+}
+</code></pre>
+<h3 id="reduced-motion-property">Reduced Motion Property</h3>
+<p>Wenn der Benutzer im Browser diesen Modus eingestellt hat, sollten wir als CSS-Designer das respektieren und optimal umsetzen. Bitte überprüfen Sie Ihre implementierten Animationen und setzen Sie sie unter diesem Property explizit auf &quot;none&quot;. Dies führt zu einer signifikanten Steigerung der Benutzerfreundlichkeit.</p>
+<pre><code class="lang-css">  <span class="hljs-comment">/* Reduced Motion Override*/</span>
+  @<span class="hljs-keyword">media</span> (prefers-reduced-motion: reduce) {
+    *,
+    *<span class="hljs-selector-pseudo">::before</span>,
+    *<span class="hljs-selector-pseudo">::after</span> {
+      <span class="hljs-attribute">animation-duration</span>: <span class="hljs-number">0.001ms</span> <span class="hljs-meta">!important</span>;
+      <span class="hljs-attribute">animation-iteration-count</span>: <span class="hljs-number">1</span> <span class="hljs-meta">!important</span>;
+      <span class="hljs-attribute">transition-duration</span>: <span class="hljs-number">0.001ms</span> <span class="hljs-meta">!important</span>;
+      <span class="hljs-attribute">scroll-behavior</span>: auto <span class="hljs-meta">!important</span>;
+    }
+
+    <span class="hljs-comment">/* Hier explizit, wenn die Fade In Animation verwendet wird */</span>
+    <span class="hljs-selector-class">.sri-group</span> {
+      <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;
+      <span class="hljs-attribute">transform</span>: none;
+      <span class="hljs-attribute">animation</span>: none;
+    }
+
+    <span class="hljs-comment">/* Ersetzt komplexe Animationen durch einfache Fade (nur wenn man eine Background-Animation implementiert hat) */</span>
+    @<span class="hljs-keyword">keyframes</span> moveBackground {
+      <span class="hljs-selector-tag">to</span> { <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translate</span>(0, 0); }
+    }
+  }
+
+  <span class="hljs-comment">/* Respektiere auch no-preference explizit */</span>
+  @<span class="hljs-keyword">media</span> (prefers-reduced-motion: no-preference) {
+    <span class="hljs-selector-class">.enhanced-animation</span> {
+      <span class="hljs-attribute">animation</span>: complexMove <span class="hljs-number">2s</span> ease-in-out infinite;
+    }
+  }
+</code></pre>
+<h3 id="pseudoelemente">Pseudoelemente</h3>
+<p>Im CSS-Design von Projekten wie <strong>korp-net</strong> spielen Pseudoelemente eine zentrale Rolle, um visuelle Effekte und dekorative Elemente elegant und performant darzustellen, ohne zusätzliche HTML-Strukturen im DOM hinzufügen zu müssen - was eh nicht möglich ist.</p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Ziemlich komplex, aber falls die Beschreibung einer Webseite leer ist, kommt dieser Text als Pseudoelement */</span>
+<span class="hljs-selector-class">.__sri-desc</span><span class="hljs-selector-pseudo">:has(</span>&gt;<span class="hljs-selector-tag">div</span><span class="hljs-selector-pseudo">:empty)</span><span class="hljs-selector-pseudo">::before</span> {
+    <span class="hljs-attribute">content</span>: <span class="hljs-string">"// DESCRIPTION REDACTED_OR_UNAVAILABLE //"</span>;
+}
+</code></pre>
+<h3 id="z-hlervariable">Zählervariable</h3>
+<p>Eine weitere Option, um Ihrem Design eine gewisse Einzigartigkeit zu verleihen, sind Zählvariablen. Diese sind im Codebeispiel für die Zählung der einzelnen Suchergebnisse ersichtlich.</p>
+<pre><code class="lang-css"><span class="hljs-selector-class">._0_main-search-results</span> {
+    <span class="hljs-attribute">counter-reset</span>: result-counter
+}
+
+<span class="hljs-selector-class">.search-result</span>&gt;<span class="hljs-selector-class">._0_TITLE</span><span class="hljs-selector-pseudo">::before</span> {
+    <span class="hljs-attribute">counter-increment</span>: result-counter;
+    <span class="hljs-attribute">content</span>: <span class="hljs-string">"PACKET_ID: 0"</span> <span class="hljs-built_in">counter</span>(result-counter)<span class="hljs-string">" // STATUS: [COMPLETE]"</span>;
+}
+</code></pre>
+<hr>
+<h2 id="community-projekte-analysieren">Community-Projekte analysieren</h2>
+<p>Eine effektive Methode, um nach geeigneten Properties zu suchen, ist die Analyse bereits bestehender Community-Projekte. Für diesen Zweck eignen sich alle bereits veröffentlichten Projekte. Nachfolgend finden Sie einige Beispiele:</p>
+<h3 id="-kagi-css-von-pdanzma-https-github-com-pdanzma-kagi-css-"><a href="https://github.com/pdanzma/kagi-css">Kagi-CSS von pdanzma</a></h3>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Glassmorphism-Design</li>
+<li>Einfache Farbkonfiguration über CSS-Variablen</li>
+<li>Responsive Design</li>
+</ul>
+<h3 id="-kagi-darker-von-realrogue-https-github-com-realrogue-kagi-darker-"><a href="https://github.com/realrogue/kagi-darker">Kagi-Darker von realrogue</a></h3>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Pure schwarze Hintergründe optimal für OLED-Displays</li>
+<li>Glassmorphism-Header auf Desktop</li>
+<li>Bubble-Design für Kagi Assistant</li>
+<li>Mobile-optimiert</li>
+</ul>
+<p><strong>Lernpunkte:</strong></p>
+<ul>
+<li>Benutzer-konfigurierbare Farben am Anfang der CSS-Datei</li>
+<li>Klare Trennung von Desktop- und Mobile-Styles</li>
+<li>Fokus auf Zugänglichkeit</li>
+</ul>
+<h3 id="-liquid-glass-theme-von-0xgingi-https-github-com-0xgingi-kagi-liquid-glass-theme-"><a href="https://github.com/0xGingi/kagi-liquid-glass-theme">Liquid Glass Theme von 0xGingi</a></h3>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Implementiert das Liquid Glass Theme von Apple</li>
+<li>Gute Dokumentation</li>
+</ul>
+<h3 id="-catppuchin-theme-von-jcrabapple-https-github-com-jcrabapple-kagi-catppuccin-light-dark-"><a href="https://github.com/jcrabapple/kagi-catppuccin-light-dark">Catppuchin Theme von jcrabapple</a></h3>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Sehr gute Dokumentation</li>
+<li>Automatischer Wechsel zwischen Hellem und Dunklem-Theme</li>
+</ul>
+<h3 id="-korp-net-theme-von-pdanzma-https-github-com-pdanzma-korp-net-"><a href="https://github.com/pdanzma/korp-net">Korp Net Theme von pdanzma</a></h3>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Kompletter Overhaul des bestehenden Designs</li>
+<li>Suchleiste unten, falls es auch in dein Theme soll</li>
+</ul>
+<h2 id="grunds-tzlich-ist-anzumerken-dass-nahezu-alle-community-themes-auch-geforkt-werden-k-nnen-dies-ist-eine-option-wenn-ein-bestehendes-theme-nach-den-individuellen-w-nschen-angepasst-und-anschlie-end-der-community-zur-verf-gung-gestellt-werden-soll-">Grundsätzlich ist anzumerken, dass nahezu alle Community-Themes auch geforkt werden können. Dies ist eine Option, wenn ein bestehendes Theme nach den individuellen Wünschen angepasst und anschließend der Community zur Verfügung gestellt werden soll.</h2>
+<h2 id="tipps-tricks">Tipps &amp; Tricks</h2>
+<h3 id="1-debugging-und-entwicklung">1. Debugging und Entwicklung</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Debug-Modus: Zeige alle Container-Grenzen */</span>
+<span class="hljs-selector-class">.debug</span> * {
+  <span class="hljs-attribute">outline</span>: <span class="hljs-number">1px</span> solid red <span class="hljs-meta">!important</span>;
+}
+
+<span class="hljs-comment">/* Temporär zum Body hinzufügen */</span>
+<span class="hljs-selector-tag">body</span><span class="hljs-selector-class">.debug</span> * {
+  <span class="hljs-attribute">outline</span>: <span class="hljs-number">1px</span> solid <span class="hljs-built_in">rgba</span>(255, 0, 0, 0.3) <span class="hljs-meta">!important</span>;
+}
+</code></pre>
+<h3 id="2-css-variablen-effektiv-nutzen">2. CSS-Variablen effektiv nutzen</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Schlecht: Werte mehrmals wiederholen */</span>
+<span class="hljs-selector-class">.element1</span> { <span class="hljs-attribute">color</span>: <span class="hljs-number">#ff6b35</span>; }
+<span class="hljs-selector-class">.element2</span> { <span class="hljs-attribute">border-color</span>: <span class="hljs-number">#ff6b35</span>; }
+<span class="hljs-selector-class">.element3</span> { <span class="hljs-attribute">background</span>: <span class="hljs-number">#ff6b35</span>; }
+
+<span class="hljs-comment">/* Gut: Variable verwenden */</span>
+<span class="hljs-selector-pseudo">:root</span> { <span class="hljs-attribute">--brand-color</span>: <span class="hljs-number">#ff6b35</span>; }
+<span class="hljs-selector-class">.element1</span> { <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--brand-color); }
+<span class="hljs-selector-class">.element2</span> { <span class="hljs-attribute">border-color</span>: <span class="hljs-built_in">var</span>(--brand-color); }
+<span class="hljs-selector-class">.element3</span> { <span class="hljs-attribute">background</span>: <span class="hljs-built_in">var</span>(--brand-color); }
+</code></pre>
+<h3 id="3-responsive-design">3. Responsive Design</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Mobile First Approach */</span>
+<span class="hljs-selector-class">.search-result</span> {
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
+}
+
+<span class="hljs-comment">/* Tablet */</span>
+@<span class="hljs-keyword">media</span> (min-width: <span class="hljs-number">768px</span>) {
+  <span class="hljs-selector-class">.search-result</span> {
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">15px</span>;
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;
+  }
+}
+
+<span class="hljs-comment">/* Desktop */</span>
+@<span class="hljs-keyword">media</span> (min-width: <span class="hljs-number">1024px</span>) {
+  <span class="hljs-selector-class">.search-result</span> {
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span>;
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
+  }
+}
+</code></pre>
+<h3 id="4-performance-optimierung">4. Performance-Optimierung</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Animationen auf GPU verlagern */</span>
+<span class="hljs-selector-class">.animated-element</span> {
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateZ</span>(0); <span class="hljs-comment">/* GPU-Beschleunigung erzwingen */</span>
+  <span class="hljs-attribute">will-change</span>: transform;   <span class="hljs-comment">/* Hint für Browser */</span>
+}
+
+<span class="hljs-comment">/* Animationen nur bei Hover */</span>
+@<span class="hljs-keyword">media</span> (hover: hover) {
+  <span class="hljs-selector-class">.hover-effect</span><span class="hljs-selector-pseudo">:hover</span> {
+    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(-2px);
+  }
+}
+</code></pre>
+<h3 id="5-browser-kompatibilit-t">5. Browser-Kompatibilität</h3>
+<p>Hier ist zu beachten, dass nicht alle neueren CSS-Regeln von allen Browsern unterstützt werden. Für dieses Vorhaben besteht die Möglichkeit, einen Fallback für ältere Browser zu implementieren, sodass auch Browser ohne Kompatibilität für neuere Regeln das Custom CSS benutzen können.</p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Fallbacks für ältere Browser */</span>
+<span class="hljs-selector-class">.modern-gradient</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#ff6b35</span>; <span class="hljs-comment">/* Fallback */</span>
+  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(135deg, #ff6b35 0%, #004e89 100%);
+}
+
+<span class="hljs-comment">/* Unterstützung prüfen */</span>
+@<span class="hljs-keyword">supports</span> (backdrop-filter: blur(<span class="hljs-number">10px</span>)) {
+  <span class="hljs-selector-class">.glassmorphism</span> {
+    <span class="hljs-attribute">backdrop-filter</span>: <span class="hljs-built_in">blur</span>(10px);
+  }
+}
+</code></pre>
+<hr>
+<h2 id="h-ufige-probleme-l-sungen">Häufige Probleme &amp; Lösungen</h2>
+<h3 id="problem-styles-werden-nicht-angewendet">Problem: Styles werden nicht angewendet</h3>
+<p><strong>Ursachen &amp; Lösungen:</strong></p>
+<ol>
+<li><p><strong>Spezifität zu niedrig</strong></p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Schwach */</span>
+<span class="hljs-selector-class">.button</span> { <span class="hljs-attribute">color</span>: red; }
+
+<span class="hljs-comment">/* Stärker */</span>
+<span class="hljs-selector-class">.search-form</span> <span class="hljs-selector-class">.button</span> { <span class="hljs-attribute">color</span>: red; }
+
+<span class="hljs-comment">/* Stärkste (nur wenn nötig, die !important ist sehr stark und überschreibt andere Regeln) */</span>
+<span class="hljs-selector-class">.search-form</span> <span class="hljs-selector-class">.button</span> { <span class="hljs-attribute">color</span>: red <span class="hljs-meta">!important</span>; }
+</code></pre>
+</li>
+<li><p><strong>Falsche Selektoren</strong></p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Falsch */</span>
+<span class="hljs-selector-class">.search_result</span> { }
+
+<span class="hljs-comment">/* Richtig */</span>
+<span class="hljs-selector-class">.search-result</span> { }
+</code></pre>
+</li>
+</ol>
+<h3 id="problem-animationen-ruckeln">Problem: Animationen ruckeln</h3>
+<p><strong>Lösungen:</strong></p>
+<pre><code class="lang-css"><span class="hljs-comment">/* GPU-Beschleunigung aktivieren */</span>
+<span class="hljs-selector-class">.smooth-animation</span> {
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateZ</span>(0);
+  <span class="hljs-attribute">backface-visibility</span>: hidden;
+  <span class="hljs-attribute">perspective</span>: <span class="hljs-number">1000</span>;
+}
+
+<span class="hljs-comment">/* Nur transform und opacity animieren */</span>
+<span class="hljs-selector-class">.performance-animation</span> {
+  <span class="hljs-attribute">transition</span>: transform <span class="hljs-number">0.3s</span> ease, opacity <span class="hljs-number">0.3s</span> ease;
+}
+</code></pre>
+<h3 id="problem-mobile-darstellung">Problem: Mobile Darstellung</h3>
+<p><strong>Lösungen:</strong></p>
+<pre><code class="lang-css"><span class="hljs-comment">/* Touch-freundliche Größen */</span>
+<span class="hljs-selector-class">.mobile-friendly</span> {
+  <span class="hljs-attribute">min-height</span>: <span class="hljs-number">44px</span>; <span class="hljs-comment">/* Mindest-Touch-Target */</span>
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">12px</span>;
+}
+
+<span class="hljs-comment">/* Viewport-spezifische Einheiten */</span>
+<span class="hljs-selector-class">.full-width</span> {
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100vw</span>;
+  <span class="hljs-attribute">margin-left</span>: <span class="hljs-built_in">calc</span>(50% - 50vw);
+}
+</code></pre>
+<hr>
+<h2 id="ressourcen-links">Ressourcen &amp; Links</h2>
+<h3 id="offizielle-kagi-ressourcen">Offizielle Kagi-Ressourcen</h3>
+<ul>
+<li><a href="https://help.kagi.com/kagi/features/custom-css.html">Kagi Custom CSS Dokumentation</a></li>
+<li><a href="https://help.kagi.com/kagi/settings/appearance.html">Kagi Appearance Settings</a></li>
+<li><a href="https://github.com/kawaiier/awesome-kagi-css">Community Themes Collection</a></li>
+</ul>
+<h3 id="css-lernressourcen">CSS-Lernressourcen</h3>
+<ul>
+<li><a href="https://css-tricks.com/guides/">CSS-Tricks Complete Guide to CSS</a></li>
+<li><a href="https://developer.mozilla.org/de/docs/Web/CSS">MDN CSS Reference</a></li>
+<li><a href="https://www.freecodecamp.org/news/css-selectors-cheat-sheet-for-beginners/">CSS Selectors Cheat Sheet</a></li>
+</ul>
+<h3 id="tools-und-hilfsmittel">Tools und Hilfsmittel</h3>
+<ul>
+<li><a href="https://css.github.io/csso/csso.html">CSS Compressor</a></li>
+<li><a href="https://glassmorphism.com/">Glassmorphism Generator</a></li>
+<li><a href="https://animista.net/">CSS Animation Generator</a></li>
+<li><a href="https://coolors.co/">Color Palette Tools</a></li>
+</ul>
+<h3 id="community">Community</h3>
+<ul>
+<li><a href="https://discord.gg/kagi">Kagi Discord</a> - verschiedene Channel für Design</li>
+<li><a href="https://www.reddit.com/r/SearchKagi/">r/SearchKagi Subreddit</a></li>
+<li><a href="https://www.reddit.com/r/KagiUserCSS/">r/KagiUserCSS Subreddit</a></li>
+</ul>
+<h3 id="neueste-css-features-2024-2025-">Neueste CSS-Features (2024/2025)</h3>
+<ul>
+<li><strong>Container Queries</strong>: Responsive Design basierend auf Container-Größe</li>
+<li><strong>:has() Pseudo-Klasse</strong>: Parent-Selektoren in CSS</li>
+<li><strong>CSS Nesting</strong>: Native Verschachtelung ohne Preprocessor</li>
+<li><strong>CSS Cascade Layers</strong>: Bessere Kontrolle über Spezifität</li>
+<li><strong>New Color Functions</strong>: <code>lch()</code>, <code>lab()</code>, <code>hwb()</code></li>
+</ul>
+<h3 id="code-beispiele-f-r-moderne-css-features">Code-Beispiele für moderne CSS-Features</h3>
+<pre><code class="lang-css"><span class="hljs-comment">/* Container Queries */</span>
+<span class="hljs-variable">@container</span> (<span class="hljs-attribute">min-width</span>: <span class="hljs-number">300px</span>) {
+  <span class="hljs-selector-class">.search-result</span> {
+    <span class="hljs-attribute">display</span>: grid;
+    <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-number">1</span>fr <span class="hljs-number">2</span>fr;
+  }
+}
+
+<span class="hljs-comment">/* :has() Pseudo-Klasse */</span>
+<span class="hljs-selector-class">.search-result</span><span class="hljs-selector-pseudo">:has(.sri-time)</span> {
+  <span class="hljs-attribute">background-color</span>: var(--highlight-bg);
+}
+
+<span class="hljs-comment">/* CSS Nesting */</span>
+<span class="hljs-selector-class">.search-form</span> {
+  <span class="hljs-attribute">background</span>: white;
+
+  <span class="hljs-selector-class">.search-input</span> {
+    <span class="hljs-attribute">border</span>: none;
+
+    <span class="hljs-selector-tag">&amp;</span><span class="hljs-selector-pseudo">:focus</span> {
+      <span class="hljs-attribute">outline</span>: <span class="hljs-number">2px</span> solid var(--brand-primary);
+    }
+  }
+}
+
+<span class="hljs-comment">/* Cascade Layers */</span>
+<span class="hljs-variable">@layer</span> base, theme, utilities;
+
+<span class="hljs-variable">@layer</span> base {
+  <span class="hljs-selector-class">.search-result</span> { <span class="hljs-attribute">color</span>: black; }
+}
+
+<span class="hljs-variable">@layer</span> theme {
+  <span class="hljs-selector-class">.search-result</span> { <span class="hljs-attribute">color</span>: var(--text-color); }
+}
+</code></pre>
+<hr>
+<h2 id="mitwirken">Mitwirken</h2>
+<p>Dieses Wiki ist ein Community-Projekt. Contributions sind willkommen!</p>
+<h3 id="wie-du-beitragen-kannst-">Wie du beitragen kannst:</h3>
+<ol>
+<li><strong>Neue Selektoren dokumentieren</strong> - Wenn du neue Kagi-CSS-Klassen findest</li>
+<li><strong>Beispiele hinzufügen</strong> - Teile deine CSS-Tricks</li>
+<li><strong>Bugs melden</strong> - Wenn etwas nicht funktioniert</li>
+<li><strong>Verbesserungen vorschlagen</strong> - Für bessere Erklärungen</li>
+</ol>
+<h3 id="template-f-r-neue-beitr-ge-">Template für neue Beiträge:</h3>
+<pre><code class="lang-markdown">### [Feature Name]
+
+**Beschreibung:** Was macht dieses Feature?
+
+**CSS-Selektor:** `.example-selector`
+
+**Beispiel:**
+```css
+.example-selector {
+  <span class="hljs-comment">/* Dein Code hier */</span>
+}
+</code></pre>
+<p><strong>Browser-Support:</strong> Chrome 90+, Firefox 88+, Safari 14+</p>
+<hr>
+<p><em>Letztes Update: August 2025</em>
+<em>Version: 1.0</em></p>
