@@ -614,23 +614,38 @@ Hier ist zu beachten, dass nicht alle neueren CSS-Regeln von allen Browsern unte
 .performance-animation {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
+/* Vermeide transition: all */
+.performance-animation {
+  transition: all 0.3s ease;
+}
 ```
 
 ### Problem: Mobile Darstellung
 
 **Lösungen:**
 ```css
-/* Touch-freundliche Größen */
-.mobile-friendly {
-  min-height: 44px; /* Mindest-Touch-Target */
-  padding: 12px;
+/* Typische Attribute für Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
 }
 
-/* Viewport-spezifische Einheiten */
-.full-width {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+/* Typische Attribute für Smartphones */
+@media (max-width: 767px) {
 }
+```
+
+### Problem: Gleiches Div auf unterschiedlichen Unterseiten / Tabs positioniert
+
+**Lösungen:**
+```css
+/* Anstatt zu versuchen, das Div mathematisch zu positionieren, kann man einfach das "data-path" Attribut aus html auslesen */
+html[data-path="/news"] .ranked-box-wrapper {
+  margin-left: 1rem;
+}
+```
+```html
+<!-- Im HTML Code von Kagi sieht man das im Inspector direkt unter <!DOCTYPE HTML> -->
+<html class="fs_0 theme_moon_dark [identifier]" data-path="/news" lang="[languagecode]">
 ```
 
 ---
@@ -699,7 +714,7 @@ Hier ist zu beachten, dass nicht alle neueren CSS-Regeln von allen Browsern unte
   }
 }
 
-/* Cascade Layers */
+/* Cascade Layers - Hier ist Vorsicht geboten, da dadurch viele Elemente aus dem CSS durcheinandergebracht werden können. */
 @layer base, theme, utilities;
 
 @layer base {
